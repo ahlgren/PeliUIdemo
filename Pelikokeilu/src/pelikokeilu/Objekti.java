@@ -39,7 +39,7 @@ public class Objekti {
      * Lisätään objektille tietoja
      * @param dataa 
      */
-    public void luoTiedot(String dataa) {   
+    public void muutaTietoja(String kuvatiedoston_nimi, String dataa) {   
     }
     
     /**

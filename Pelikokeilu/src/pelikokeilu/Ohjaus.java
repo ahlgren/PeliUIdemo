@@ -21,6 +21,21 @@ public class Ohjaus {
         static JLabel aliAliValikkoOsoitin = null;
         static int nytEsillaOlevaSivuNro = 0;
         static int nytEsillaOlevienKuvienLkm = 0;
+        public static final int sivujenMaxMaara = 40;
+        
+          /** luodaan kirjaolio, mikä näkyy näytöllä kirjana, jonka sivuja selaillaan **/    
+        static Objekti kirja = new Objekti("kirja3.png", 177, 48, "kirja");
+       
+           /** luodaan taulukko objektiolioille **/      
+        static ArrayList<Objekti> objektit = new ArrayList<Objekti>();
+        
+          /** luodaan oliotaulukko, joka sisältää viitteet kunkin sivun objektiviitteitä 
+            sisältävään oliotaulukkoon, sivujen määrä on kiinteä, esim max 40  **/
+        //static HashMap<ArrayList, Objekti> sivut = new HashMap<ArrayList, Objekti>();
+        static ArrayList[] sivut = new ArrayList[sivujenMaxMaara];
+        static Objekti valikot[] = new Objekti[sivujenMaxMaara];
+        /*  luodaan taulukko, missä on viittaukset objektien kuviin (ikoneihin) */
+        static ArrayList<JLabel> objKuvanOsoittimet = new ArrayList<JLabel>();
         
           /** luodaan eri sivujen valikko-oliot **/
         static Objekti etuSivuValikko = new Objekti("etusivuVa1.png", 207, 44, "etusivu");
@@ -45,22 +60,10 @@ public class Ohjaus {
         static Objekti roskis = new Objekti("roskis.png", 36, 412, "roskis");
         static Objekti leikepoyta = new Objekti("leikepoyta.png", 190, 412, "leikepoyta");
         
-          /** luodaan kirjaolio, mikä näkyy näytöllä kirjana, jonka sivuja selaillaan **/    
-        static Objekti kirja = new Objekti("kirja3.png", 177, 48, "kirja");
        
-           /** luodaan taulukko objektiolioille **/      
-        static ArrayList<Objekti> objektit = new ArrayList<Objekti>();
-        
-          /** luodaan oliotaulukko, joka sisältää viitteet kunkin sivun objektiviitteitä 
-            sisältävään oliotaulukkoon, sivujen määrä on kiinteä, esim max 40  **/
-        //static HashMap<ArrayList, Objekti> sivut = new HashMap<ArrayList, Objekti>();
-        static ArrayList[] sivut = new ArrayList[40];
-        static Objekti valikot[] = new Objekti[40];
-        /*  luodaan taulukko, missä on viittaukset objektien kuviin (ikoneihin) */
-        static ArrayList<JLabel> objKuvanOsoittimet = new ArrayList<JLabel>();
         
       /**
-       * * Luodaan ikonin kokoiset objektioliot, luodaan ruudun kokoiset objektioliot.
+       * * Luodaan objektioliot.
          * Alustetaan sivut-taulukko = kiinteäpituinen taulukko ArrayListoista.
          * Alustetaan valikot-taulukko valikko-objekteilla.
          * Alustetaan sivujen objektitaulukot.
@@ -289,6 +292,7 @@ public class Ohjaus {
      * metodi näyttää sivulle kuuluvat objektit
      */  
     public static void naytaSivu(int sivunNro){
+        if (sivunNro >= sivujenMaxMaara) return;
         poistaSivunObjektitNakyvista();
         int i;
         ArrayList t = sivut[sivunNro];
@@ -305,6 +309,7 @@ public class Ohjaus {
      * @param sivunNro - sen sivun nro, joka halutaan näytölle 
      */
     public static void naytaAliSivu(int sivunNro){
+        if (sivunNro >= sivujenMaxMaara) return;
         poistaSivunObjektitNakyvista();
         int i=0;
         ArrayList t = sivut[sivunNro];
@@ -321,6 +326,7 @@ public class Ohjaus {
      * @param valikonNro - näkyviin halutun valikon numero
      */
     public static void naytaValikko(int valikonNro) {
+        if (valikonNro >= sivujenMaxMaara) return;
         if (valikkoOsoitin != null) sivu.poistaValikkoNakyvista(valikkoOsoitin);
         if (aliValikkoOsoitin != null) sivu.poistaValikkoNakyvista(aliValikkoOsoitin);
         if (aliAliValikkoOsoitin != null) sivu.poistaValikkoNakyvista(aliAliValikkoOsoitin);
@@ -332,6 +338,7 @@ public class Ohjaus {
      * @param valikonNro  - näkyviin halutun valikon numero
      */
     public static void naytaAliValikko(int valikonNro){
+        if (valikonNro >= sivujenMaxMaara) return;
         if (aliValikkoOsoitin != null) sivu.poistaValikkoNakyvista(aliValikkoOsoitin);
         if (aliAliValikkoOsoitin != null) sivu.poistaValikkoNakyvista(aliAliValikkoOsoitin);
         aliValikkoOsoitin = sivu.valikkoNakyviin(valikot[valikonNro]);
@@ -342,6 +349,7 @@ public class Ohjaus {
      * @param valikonNro  - näkyviin halutun valikon numero
      */
     public static void naytaAliAliValikko(int valikonNro){
+        if (valikonNro >= sivujenMaxMaara) return;
         if (aliAliValikkoOsoitin != null) sivu.poistaValikkoNakyvista(aliAliValikkoOsoitin);
         aliAliValikkoOsoitin = sivu.valikkoNakyviin(valikot[valikonNro]);
     }
@@ -392,15 +400,16 @@ public class Ohjaus {
         
         // objekti raahattiin lähelle alivalikkoja 
         if (paikka.x > 128 && paikka.x < 179) {  
-             System.out.println("Objekti lähellä alivalikkoja");
-             if (paikka.y > 70 && paikka.y < 101) {  // placies
+            naytaValikko(0);
+            System.out.println("Objekti lähellä alivalikkoja");
+            if (paikka.y > 70 && paikka.y < 101) {  // placies
                  naytaAliValikko(12);  //PlaciesAliValikko    
                  if ((paikka.x > 164 && paikka.x < 181) && (paikka.y > 60 && paikka.y < 80)) { //Map
                     nimi.muutaPaikkaa(100, paikka.y);
                     sivut[13].add(nimi); // siirretään objekti ko sivulle
                     naytaAliSivu(13);  //Map
                 }   
-             }
+            }
             if (paikka.y > 100 && paikka.y < 130) { //Communicate
                 naytaAliValikko(13);  //CommunicateAliValikko    
                 if ((paikka.x > 164 && paikka.x < 181) && (paikka.y > 105 && paikka.y < 130)) { //Call
@@ -719,15 +728,15 @@ public class Ohjaus {
         Scanner lue = new Scanner(System.in);
         String komento;
         System.out.println("Komennot: \n"
-                + " 1 = siirrä objekti0 peoplesivulta textSivulle \n"
-                + " 2 =  poistetaan objekti2 \n"
+                + " 1 = siirrä objekti peoplesivulta writeSivulle \n"
+                + " 2 = poistetaan objekti \n"
                 + " 3 = näytä se sivu, minkä numeron käyttäjä antaa \n"
                 + " 4 = poistetaan kaikki sivun objektit \n"
                 + " 5 = poista sivu \n"
                 + " 6 = poistetaan valikko\n"
                 + " 7 = aseta tyttö uudestaan\n"
                 + " 8 = näytä peoplesivu\n"
-                + " 9 = näytä textsivu\n"
+                + " 9 = näytä writesivu\n"
                 + " 0 = exit");
         do {
             komento = lue.nextLine();
@@ -775,6 +784,13 @@ public class Ohjaus {
         }
         while (!(komento.equals("0")));
         System.out.println("\n Tultiin ulos valikosta");              
-        // /* viimeisimmät piirtyvät edellisten alle */        
+        // /* viimeisimmät piirtyvät edellisten alle */         
     }           
+    private static int lueParametri() {
+        Scanner lukija = new Scanner(System.in);
+        int param;
+        System.out.println("Anna luku: \n");
+        param = lukija.nextInt();
+        return param;
+    }
 }
